@@ -5,6 +5,7 @@ package sfdeviceid
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 
@@ -15,12 +16,20 @@ const (
 	deviceIDFileName = ".device_id"
 )
 
-func GetDeviceID() (string, error) {
+func filePath() (string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
 	deviceIDPath := filepath.Join(homeDir, deviceIDFileName)
+	return deviceIDPath, err
+}
+
+func GenDeviceID() (string, error) {
+	deviceIDPath, err := filePath()
+	if err != nil {
+		return "", err
+	}
 	deviceID, err := os.ReadFile(deviceIDPath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -35,4 +44,19 @@ func GetDeviceID() (string, error) {
 		return "", err
 	}
 	return string(deviceID), nil
+}
+
+func DeviceID() string {
+	deviceIDPath, err := filePath()
+	if err != nil {
+		slog.Error("file path .device_id", "error", err)
+		return ""
+	}
+	deviceID, err := os.ReadFile(deviceIDPath)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			slog.Error("reading file .device_id", "error", err)
+		}
+	}
+	return string(deviceID)
 }

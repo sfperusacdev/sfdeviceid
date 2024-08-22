@@ -1,4 +1,4 @@
-module sfdeviceid
+module github.com/sfperusacdev/sfdeviceid
 
 go 1.22.0
 

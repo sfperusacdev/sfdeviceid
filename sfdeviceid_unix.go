@@ -4,7 +4,6 @@
 package sfdeviceid
 
 import (
-	"fmt"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -36,9 +35,10 @@ func GenDeviceID() (string, error) {
 			newDeviceID := uuid.New().String()
 			err = os.WriteFile(deviceIDPath, []byte(newDeviceID), 0600)
 			if err != nil {
+				slog.Error("Device ID generate", "error", err)
 				return "", err
 			}
-			fmt.Println("Device ID was generated:", newDeviceID)
+			slog.Info("Device ID was generated", "id", newDeviceID)
 			return newDeviceID, nil
 		}
 		return "", err

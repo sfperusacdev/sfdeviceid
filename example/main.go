@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"sfdeviceid"
+
+	"github.com/sfperusacdev/sfdeviceid"
 )
 
 func main() {

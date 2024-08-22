@@ -6,5 +6,6 @@ import (
 )
 
 func main() {
+	fmt.Println(sfdeviceid.GenDeviceID())
 	fmt.Println(sfdeviceid.DeviceID())
 }

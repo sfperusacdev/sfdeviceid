@@ -15,21 +15,22 @@ const regPath = `SOFTWARE\xhrydhslwlls`
 const regName = "dhid"
 
 func getRegistry() (*registry.Key, error) {
-	key, err := registry.OpenKey(registry.LOCAL_MACHINE, regPath, registry.QUERY_VALUE|registry.SET_VALUE)
+	key, err := registry.OpenKey(registry.CURRENT_USER, regPath, registry.QUERY_VALUE|registry.SET_VALUE)
 	if err != nil {
 		if err == registry.ErrNotExist {
-			key, _, err = registry.CreateKey(registry.LOCAL_MACHINE, regPath, registry.SET_VALUE)
+			key, _, err = registry.CreateKey(registry.CURRENT_USER, regPath, registry.SET_VALUE)
 			if err != nil {
 				slog.Error("CreateKey registry", "error", err)
 				return nil, err
 			}
 		} else {
-			slog.Error("opening registry", "error", err)
+			slog.Error("Opening registry", "error", err)
 			return nil, err
 		}
 	}
 	return &key, nil
 }
+
 func GenDeviceID() (string, error) {
 	key, err := getRegistry()
 	if err != nil {
@@ -62,7 +63,7 @@ func DeviceID() string {
 	}
 	defer key.Close()
 	deviceID, _, err := key.GetStringValue(regName)
-	if err != registry.ErrNotExist {
+	if err != registry.ErrNotExist && err != nil {
 		slog.Error("reading value from registry device_id", "error", err)
 		return ""
 	}
